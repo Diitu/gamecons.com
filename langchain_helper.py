@@ -1,22 +1,16 @@
+import os
 from langchain_community.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SequentialChain
-from secret_key import openapi_key
 
-# Initialize the OpenAI model
-llm = OpenAI(model_name="gpt-3.5-turbo-instruct", temperature=0.6, openai_api_key=openapi_key)
+# Initialize the OpenAI model using the API key from the environment variable
+openai_api_key = os.getenv("OPENAI_API_KEY")
+if not openai_api_key:
+    raise ValueError("No OpenAI API key found in environment variables.")
+
+llm = OpenAI(model_name="gpt-3.5-turbo-instruct", temperature=0.6, openai_api_key=openai_api_key)
 
 def recommend_games(preferences: str) -> list[str]:
-    """
-    Recommend a list of games based on user preferences.
-
-    Parameters:
-    preferences (str): A description of the kind of games the user likes.
-
-    Returns:
-    list: list of recommended games
-    """
-    
     prompt_template_games = PromptTemplate(
         input_variables=['preferences'],
         template="""Based on the following preferences: {preferences}, 
